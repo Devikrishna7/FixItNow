@@ -1,0 +1,102 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      {% comment %} background: linear-gradient(to right, #4facfe, #00f2fe); {% endcomment %}
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: #333;
+      padding: 20px;
+    }
+    .dashboard {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    .btn {
+      display: inline-block;
+      padding: 8px 15px;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    .btn-logout {
+      background: red;
+    }
+    .btn-logout:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    {% comment %} <h1>Welcome, {{ user.username }}</h1> {% endcomment %}
+    <h1>Welcome </h1>
+    <a href="{% url 'submit_complaint' %}" class="btn">Submit New Complaint</a>
+    <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+
+    <h2>Your Complaints</h2>
+    {% if complaints %}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr>
+            <td>{{ complaint.title }}</td>
+            <td>{{ complaint.description }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>{{ complaint.created_at|date:"d M Y H:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>You have not submitted any complaints yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
+

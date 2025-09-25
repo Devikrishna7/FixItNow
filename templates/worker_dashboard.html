@@ -1,0 +1,77 @@
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Worker Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .complaint { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        .resolved { background-color: #d4edda; }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ request.user.username }}</h1>
+    
+    <h3>Status: {{ profile.status }}</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <select name="status">
+            <option value="Available" {% if profile.status == 'Available' %}selected{% endif %}>Available</option>
+            <option value="Busy" {% if profile.status == 'Busy' %}selected{% endif %}>Busy</option>
+        </select>
+        <button type="submit">Update Status</button>
+    </form>
+
+    <h2>Assigned Complaints</h2>
+    {% for complaint in complaints %}
+        <div class="complaint {% if complaint.resolved %}resolved{% endif %}">
+            <h4>{{ complaint.title }}</h4>
+            <p>{{ complaint.description }}</p>
+            <p>Status: {% if complaint.resolved %}Resolved{% else %}Pending{% endif %}</p>
+            {% if not complaint.resolved %}
+                <a href="{% url 'mark_resolved' complaint.id %}">Mark as Resolved</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No complaints assigned.</p>
+    {% endfor %}
+</body>
+</html> {% endcomment %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Worker Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .complaint { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px; }
+        .resolved { background-color: #d4edda; }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ request.user.username }}</h1>
+    
+    <h3>Status: {{ profile.status }}</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <select name="status">
+            <option value="Available" {% if profile.status == 'Available' %}selected{% endif %}>Available</option>
+            <option value="Busy" {% if profile.status == 'Busy' %}selected{% endif %}>Busy</option>
+            <option value="Offline" {% if profile.status == 'Offline' %}selected{% endif %}>Offline</option>
+        </select>
+        <button type="submit">Update Status</button>
+    </form>
+
+    <h2>Assigned Complaints</h2>
+    {% for complaint in complaints %}
+        <div class="complaint {% if complaint.resolved %}resolved{% endif %}">
+            <h4>{{ complaint.title }}</h4>
+            <p>{{ complaint.description }}</p>
+            <p>Status: {% if complaint.resolved %}Resolved{% else %}Pending{% endif %}</p>
+            {% if not complaint.resolved %}
+                <a href="{% url 'mark_resolved' complaint.id %}">Mark as Resolved</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No complaints assigned.</p>
+    {% endfor %}
+</body>
+</html>

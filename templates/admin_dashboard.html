@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            font-size: 15px;
+        }
+
+        th {
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        tr:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .btn {
+            padding: 6px 12px;
+            background-color: #6a11cb;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #9b59b6;
+        }
+
+        .top-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .top-buttons a {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <div class="top-buttons">
+            <a href="{% url 'add_worker' %}" class="btn">Add Worker</a>
+            <a href="{% url 'logout' %}" class="btn">Logout</a>
+        </div>
+
+        <h2>All Complaints</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Submitted By</th>
+                    <th>Status</th>
+                    <th>Assigned Worker</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint.id }}</td>
+                    <td>{{ complaint.title }}</td>
+                    <td>{{ complaint.description }}</td>
+                    <td>{{ complaint.category }}</td>
+                    <td>{{ complaint.user.username }}</td>
+                    <td>{{ complaint.status }}</td>
+                    <td>{{ complaint.assigned_worker.username|default:"Not assigned" }}</td>
+                    <td>
+                        {% if complaint.status != "Resolved" %}
+                        <a href="{% url 'mark_resolved' complaint.id %}" class="btn">Mark Resolved</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No complaints found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Workers</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for worker in workers %}
+                <tr>
+                    <td>{{ worker.id }}</td>
+                    <td>{{ worker.username }}</td>
+                    <td>{{ worker.workerprofile.status }}</td>
+                    <td>
+                        <a href="{% url 'update_worker' worker.id %}" class="btn">Edit</a>
+                        <a href="{% url 'delete_worker' worker.id %}" class="btn">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No workers found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

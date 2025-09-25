@@ -119,11 +119,19 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# Media files (for uploaded complaint images)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Redirect URLs after login/logout
+
+# Custom User Model
+AUTH_USER_MODEL = 'fixitnow.CustomUser'
+
 LOGIN_URL = 'login'               # URL to redirect to if user is not logged in
 LOGIN_REDIRECT_URL = 'student_dashboard'            # After successful login, go to index
 LOGOUT_REDIRECT_URL = 'login'     # After logout, redirect to login page

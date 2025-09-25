@@ -9,61 +9,72 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
-            color: #fff;
+            background: #e0f7ef; /* light green background same as student dashboard */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             padding: 20px;
         }
 
         .container {
             max-width: 500px;
-            margin: auto;
-            background: rgba(255,255,255,0.05);
+            width: 100%;
+            background: white; /* white box */
+            border-radius: 12px;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
         }
 
         h1 {
             text-align: center;
             margin-bottom: 25px;
-            font-size: 28px;
-            color: #fff;
+            color: green; /* heading color */
         }
 
         label {
             display: block;
             margin: 15px 0 5px;
             font-weight: bold;
+            color: black;
         }
 
         input[type="text"], input[type="password"], select {
             width: 100%;
             padding: 10px;
-            border-radius: 8px;
-            border: none;
+            border-radius: 6px;
+            border: 1px solid #ddd;
             margin-bottom: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
         }
 
         button {
             width: 100%;
             padding: 12px;
-            background-color: #6a11cb;
+            background-color: green; /* button green */
             border: none;
-            border-radius: 8px;
-            color: #fff;
+            border-radius: 6px;
+            color: white;
             font-size: 16px;
             cursor: pointer;
             transition: 0.3s;
+            margin-top: 10px;
         }
 
         button:hover {
-            background-color: #9b59b6;
+            background-color: #006400; /* dark green on hover */
         }
 
         a {
             display: inline-block;
             margin-top: 15px;
-            color: #fff;
+            color: green;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
             text-decoration: underline;
         }
     </style>

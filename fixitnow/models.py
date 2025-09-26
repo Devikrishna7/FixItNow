@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
@@ -136,5 +135,3 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.role == 'worker':
             WorkerProfile.objects.get_or_create(user=instance)
-        # elif instance.role == 'student':
-        #     StudentProfile.objects.get_or_create(user=instance)

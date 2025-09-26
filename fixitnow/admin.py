@@ -57,12 +57,6 @@ class CustomUserAdmin(UserAdmin):
             elif obj.role == "student":
                 return [StudentProfileInline(self.model, self.admin_site)]
         return []
-        # if obj and obj.role == "worker":
-        #     return [WorkerProfileInline(self.model, self.admin_site)]
-        #     elif obj.role == "student":
-        #         return [StudentProfileInline(self.model, self.admin_site)]
-        # return []
-
 
       # Extra fields for student profile
     def get_phone(self, obj):
@@ -81,7 +75,7 @@ class CustomUserAdmin(UserAdmin):
         return obj.studentprofile.year_of_admission if hasattr(obj, "studentprofile") else "-"
     get_year_of_admission.short_description = "Year"
 
-    
+
 # -----------------------------
 # Worker Profile Admin
 # -----------------------------

@@ -49,34 +49,6 @@ def logout_view(request):
     messages.info(request, "You have been logged out.")
     return redirect("login")
 
-
-
-# # -----------------------------
-# # Register Page (for students)
-# # -----------------------------
-# def register_view(request):
-#     if request.method == "POST":
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
-#         confirm_password = request.POST.get("confirm_password")
-
-#         if password != confirm_password:
-#             messages.error(request, "Passwords do not match")
-#             return redirect("register")
-
-#         if CustomUser.objects.filter(username=username).exists():
-#             messages.error(request, "Username already exists")
-#             return redirect("register")
-
-#         # Create a student user by default
-#         user = CustomUser.objects.create_user(username=username, password=password, role='student')
-#         user.save()
-#         messages.success(request, "Account created successfully! Please login.")
-#         return redirect("login")
-
-#     return render(request, "register.html")
-
-
 # -----------------------------
 # Student Dashboard
 # -----------------------------
@@ -94,15 +66,6 @@ def student_dashboard(request):
         "complaints": complaints,
         "profile": student_profile
     })
-
-# @login_required(login_url="login")
-# def student_dashboard(request):
-#     if request.user.role != 'student':
-#         return HttpResponseForbidden("You are not authorized to view this page.")
-
-#     complaints = request.user.student_complaints.all().order_by("-created_at")
-#     return render(request, "student_dashboard.html", {"complaints": complaints})
-
 
 # -----------------------------
 # Submit Complaint

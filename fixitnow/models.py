@@ -4,7 +4,14 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# Custom User Model
+DEPARTMENT_CHOICES = [
+    ('BTech', 'B.Tech'),
+    ('MTech', 'M.Tech'),
+    ('MBA', 'MBA'),
+    ('MCA', 'MCA'),
+    ('PhD', 'PhD'),
+]
+
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ('student', 'Student'),
@@ -30,6 +37,18 @@ class WorkerProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class StudentProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'student'})
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    department = models.CharField(max_length=10, choices=DEPARTMENT_CHOICES)
+    admission_number = models.CharField(max_length=50)
+    year_of_admission = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
 
 
 class Complaint(models.Model):
@@ -85,7 +104,7 @@ class Complaint(models.Model):
 
         super().save(*args, **kwargs) 
 
-        # If assigned worker changed, free previous
+        # If assigned worker changed, free old worketr
         if old_assigned and old_assigned != self.assigned_worker:
             try:
                 wp_old = WorkerProfile.objects.get(user=old_assigned)
@@ -110,3 +129,12 @@ class Complaint(models.Model):
 def create_worker_profile(sender, instance, created, **kwargs):
     if created and instance.role == 'worker':
         WorkerProfile.objects.get_or_create(user=instance, title="New Worker")
+
+
+@receiver(post_save, sender=CustomUser)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        if instance.role == 'worker':
+            WorkerProfile.objects.get_or_create(user=instance)
+        # elif instance.role == 'student':
+        #     StudentProfile.objects.get_or_create(user=instance)

@@ -2,16 +2,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseForbidden
-from .models import Complaint, WorkerProfile, CustomUser
-from django.contrib import messages
+from .models import Complaint, WorkerProfile, StudentProfile, CustomUser
+from django.contrib.auth.hashers import make_password
 
 # -----------------------------
 # Home Page
 # -----------------------------
+# @login_required(login_url='login')
 def index(request):
     return render(request, "index.html")
 
@@ -50,41 +50,58 @@ def logout_view(request):
     return redirect("login")
 
 
-# -----------------------------
-# Register Page (for students)
-# -----------------------------
-def register_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
 
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match")
-            return redirect("register")
+# # -----------------------------
+# # Register Page (for students)
+# # -----------------------------
+# def register_view(request):
+#     if request.method == "POST":
+#         username = request.POST.get("username")
+#         password = request.POST.get("password")
+#         confirm_password = request.POST.get("confirm_password")
 
-        if CustomUser.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
-            return redirect("register")
+#         if password != confirm_password:
+#             messages.error(request, "Passwords do not match")
+#             return redirect("register")
 
-        # Create a student user by default
-        user = CustomUser.objects.create_user(username=username, password=password, role='student')
-        user.save()
-        messages.success(request, "Account created successfully! Please login.")
-        return redirect("login")
+#         if CustomUser.objects.filter(username=username).exists():
+#             messages.error(request, "Username already exists")
+#             return redirect("register")
 
-    return render(request, "register.html")
+#         # Create a student user by default
+#         user = CustomUser.objects.create_user(username=username, password=password, role='student')
+#         user.save()
+#         messages.success(request, "Account created successfully! Please login.")
+#         return redirect("login")
+
+#     return render(request, "register.html")
+
 
 # -----------------------------
 # Student Dashboard
 # -----------------------------
+
 @login_required(login_url="login")
 def student_dashboard(request):
     if request.user.role != 'student':
         return HttpResponseForbidden("You are not authorized to view this page.")
-
+    
+    # Access student profile if needed
+    student_profile = getattr(request.user, 'studentprofile', None)
+    
     complaints = request.user.student_complaints.all().order_by("-created_at")
-    return render(request, "student_dashboard.html", {"complaints": complaints})
+    return render(request, "student_dashboard.html", {
+        "complaints": complaints,
+        "profile": student_profile
+    })
+
+# @login_required(login_url="login")
+# def student_dashboard(request):
+#     if request.user.role != 'student':
+#         return HttpResponseForbidden("You are not authorized to view this page.")
+
+#     complaints = request.user.student_complaints.all().order_by("-created_at")
+#     return render(request, "student_dashboard.html", {"complaints": complaints})
 
 
 # -----------------------------
@@ -174,9 +191,68 @@ def admin_dashboard(request):
     workers = WorkerProfile.objects.all()
      # Fetch all workers with their user info
     workers = WorkerProfile.objects.select_related('user').all()
-    return render(request, "admin_dashboard.html", {"complaints": complaints, "workers": workers})
+    students = StudentProfile.objects.select_related('user').all()  # Fetch students
+    return render(request, "admin_dashboard.html", {"complaints": complaints, "workers": workers, "students": students})
 
 
+# -----------------------------
+# Add Student (Admin only)
+# -----------------------------
+@login_required(login_url="login")
+def add_student(request):
+    if request.user.role != 'admin':
+        return HttpResponseForbidden("You are not authorized to perform this action.")
+
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+        email = request.POST.get("email")
+        phone_number = request.POST.get("phone_number")
+        department = request.POST.get("department")
+        admission_number = request.POST.get("admission_number")
+        year_of_admission = request.POST.get("year_of_admission")
+
+        # Password match check
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return redirect("add_student")
+
+        # Username uniqueness
+        if CustomUser.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("add_student")
+
+        # Email uniqueness
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists")
+            return redirect("add_student")
+
+        # Create student user
+        user = CustomUser.objects.create_user(
+            username=username,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            role='student'
+        )
+
+        # Save extra info in StudentProfile
+        StudentProfile.objects.create(
+            user=user,
+            phone_number=phone_number,
+            department=department,
+            admission_number=admission_number,
+            year_of_admission=year_of_admission
+        )
+
+        messages.success(request, f"Student '{username}' added successfully!")
+        return redirect("admin_dashboard")
+
+    return render(request, "add_student.html")
 # -----------------------------
 # Assign worker to complaint
 # -----------------------------

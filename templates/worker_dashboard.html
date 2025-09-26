@@ -196,6 +196,13 @@
             margin-bottom: 15px;
         }
 
+        .top-buttons {
+            display: flex;
+            color: red;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
         form {
             display: flex;
             align-items: center;
@@ -285,6 +292,10 @@
 <body>
     <div class="dashboard">
         <h1>Worker Dashboard</h1>
+
+        <div class="top-buttons">
+            <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+        </div>
 
         <h3>Status: {{ profile.status }}</h3>
         <form method="POST">

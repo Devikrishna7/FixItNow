@@ -78,4 +78,14 @@
 
             <label>Status:</label>
             <select name="status">
-                <option value="Available" {% if worker.workerprofile.status == 'Available
+                <option value="Available" {% if worker.workerprofile.status == "Available" %}selected{% endif %}>Available</option>
+                <option value="Busy" {% if worker.workerprofile.status == "Busy" %}selected{% endif %}>Busy</option>
+                <option value="On Leave" {% if worker.workerprofile.status == "On Leave" %}selected{% endif %}>On Leave</option>
+            </select>
+
+            <button type="submit">Update</button>
+        </form>
+        <a href="{% url 'worker_list' %}">Back to Worker List</a>
+    </div>
+</body>
+</html>

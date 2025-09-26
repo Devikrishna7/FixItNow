@@ -99,7 +99,7 @@ class CustomUserAdmin(UserAdmin):
 # Worker Profile Admin
 # -----------------------------
 class WorkerProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'status')
+    list_display = ('user', 'phone_number', 'status')
     list_filter = ('status',)
     search_fields = ('user__username', 'title')
 

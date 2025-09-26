@@ -16,8 +16,8 @@ urlpatterns = [
 
     path("admin-dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("add-worker/", views.add_worker, name="add_worker"),
-    path("update-worker/<int:user_id>/", views.update_worker, name="update_worker"),
-    path("delete-worker/<int:user_id>/", views.delete_worker, name="delete_worker"),
+    path("update-worker/<int:worker_id>/", views.update_worker, name="update_worker"),
+    path("delete-worker/<int:worker_id>/", views.delete_worker, name="delete_worker"),
     path("assign-worker/<int:complaint_id>/", views.assign_worker, name="assign_worker"),
 
 ]

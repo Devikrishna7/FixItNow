@@ -1,60 +1,4 @@
-# from django.db import models
-# from django.contrib.auth.models import AbstractUser
 
-# # Custom User Model
-# class CustomUser(AbstractUser):
-#     ROLE_CHOICES = (
-#         ('student', 'Student'),
-#         ('worker', 'Worker'),
-#         ('admin', 'Admin'),
-#     )
-#     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
-
-#     def __str__(self):
-#         return f"{self.username} ({self.role})"
-
-# # Worker Profile (optional extra details for workers)
-# class WorkerProfile(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-#     title = models.CharField(max_length=100)
-#     status = models.CharField(max_length=20, default='Available')  # Available, Busy, Offline
-
-#     def __str__(self):
-#         return f"{self.title} - {self.user.username}"
-
-
-# # Complaint Model
-# class Complaint(models.Model):
-#     STATUS_CHOICES = [
-#         ('Pending', 'Pending'),
-#         ('Assigned', 'Assigned'),
-#         ('Resolved', 'Resolved'),
-#     ]
-
-#     CATEGORY_CHOICES = [
-#         ('Plumbing', 'Plumbing'),
-#         ('Electrical', 'Electrical'),
-#         ('Cleaning', 'Cleaning'),
-#         ('Other', 'Other'),
-#     ]
-
-#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='student_complaints')
-#     title = models.CharField(max_length=100)
-#     description = models.TextField()
-#     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, blank=True)
-#     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-#     assigned_worker = models.ForeignKey(
-#         CustomUser,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         related_name='assigned_complaints'
-#     )
-#     image = models.ImageField(upload_to='complaint_images/', blank=True, null=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f"{self.title} - {self.status}"
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
@@ -81,11 +25,11 @@ class WorkerProfile(models.Model):
     )
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'worker'})
-    title = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Available')
 
     def __str__(self):
-        return f"{self.title} - {self.user.username}"
+        return self.user.username
 
 
 class Complaint(models.Model):
@@ -139,7 +83,7 @@ class Complaint(models.Model):
             except Complaint.DoesNotExist:
                 old_assigned = None
 
-        super().save(*args, **kwargs)  # save first to get pk
+        super().save(*args, **kwargs) 
 
         # If assigned worker changed, free previous
         if old_assigned and old_assigned != self.assigned_worker:
@@ -162,12 +106,7 @@ class Complaint(models.Model):
             except WorkerProfile.DoesNotExist:
                 pass
         # If no assigned worker and status is Assigned, optionally set complaint back to Pending
-        # (optional) You can decide how you want to handle this case.
-# @receiver(post_save, sender=CustomUser)
-# def save_worker_profile(sender, instance, **kwargs):
-#     if instance.role == "worker":
-#         WorkerProfile.objects.get_or_create(user=instance, title="New Worker")
-@receiver(post_save, sender=CustomUser)
+
 def create_worker_profile(sender, instance, created, **kwargs):
     if created and instance.role == 'worker':
         WorkerProfile.objects.get_or_create(user=instance, title="New Worker")

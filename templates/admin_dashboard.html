@@ -1,208 +1,4 @@
-{% comment %} 
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #e0f7ef; /* light green background same as student dashboard */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
 
-        .dashboard {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 1200px;
-            width: 100%;
-            box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
-            margin: 20px 0;
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: green;
-            margin-bottom: 25px;
-        }
-
-        .top-buttons {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
-
-        .top-buttons a {
-            padding: 8px 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            margin-left: 10px;
-            transition: background 0.3s;
-            font-size: 14px;
-            color: white;
-        }
-
-        .btn-add {
-            background-color: green;
-        }
-
-        .btn-add:hover {
-            background-color: #006400;
-        }
-
-        .btn-logout {
-            background-color: red;
-        }
-
-        .btn-logout:hover {
-            background-color: darkred;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-            font-size: 14px;
-        }
-
-        th {
-            background-color: #b3ffb3; /* light green table headings */
-            color: black;
-        }
-
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        tr:hover {
-            background: #e0f7ef;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .btn-edit {
-            background-color: #007bff; /* blue */
-            color: white;
-        }
-
-        .btn-edit:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-delete {
-            background-color: #007bff; /* blue */
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background-color: #0056b3;
-        }
-
-        p {
-            color: black;
-            font-size: 14px;
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard">
-        <h1>Admin Dashboard</h1>
-
-        <div class="top-buttons">
-            <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
-        </div>
-
-        <h2>Complaints Table</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Submitted By</th>
-                    <th>Status</th>
-                    <th>Assigned Worker</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for complaint in complaints %}
-                <tr>
-                    <td>{{ complaint.id }}</td>
-                    <td>{{ complaint.title }}</td>
-                    <td>{{ complaint.description }}</td>
-                    <td>{{ complaint.category }}</td>
-                    <td>{{ complaint.user.username }}</td>
-                    <td>{{ complaint.status }}</td>
-                    <td>{{ complaint.assigned_worker.username|default:"Not assigned" }}</td>
-                    <td>
-                        {% if complaint.status != "Resolved" %}
-                        <a href="{% url 'mark_resolved' complaint.id %}" class="btn btn-edit">Mark Resolved</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="8">No complaints found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <h2>Worker Details</h2>
-        <div class="top-buttons">
-            <a href="{% url 'add_worker' %}" class="btn btn-add">Add Worker</a>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for worker in workers %}
-                <tr>
-                    <td>{{ worker.id }}</td>
-                    <td>{{ worker.username }}</td>
-                    <td>{{ worker.workerprofile.status }}</td>
-                    <td>
-                        <a href="{% url 'update_worker' worker.id %}" class="btn btn-edit">Edit</a>
-                        <a href="{% url 'delete_worker' worker.id %}" class="btn btn-delete">Delete</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">No workers found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html> {% endcomment %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -293,63 +89,72 @@
     </div>
 
     <!-- Complaints Table -->
-    <h2>Complaints Table</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Submitted By</th>
-                <th>Status</th>
-                <th>Assigned Worker</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for complaint in complaints %}
-            <tr>
-                <td>{{ complaint.id }}</td>
-                <td>{{ complaint.title }}</td>
-                <td>{{ complaint.description }}</td>
-                <td>{{ complaint.category }}</td>
-                <td>{{ complaint.user.username }}</td>
-                <td>{{ complaint.status }}</td>
-                <td>
-                    {% if complaint.assigned_worker %}
-                        {{ complaint.assigned_worker.username }}
-                    {% else %}
-                        Not assigned
-                    {% endif %}
-                </td>
-                <td>
-                    {% if complaint.status == "Pending" %}
-                        <form method="POST" action="{% url 'assign_worker' complaint.id %}">
-                            {% csrf_token %}
-                            <select name="worker_id" required>
-                                {% for worker in workers %}
-                                    {% if worker.status == "Available" %}
-                                        <option value="{{ worker.id }}">{{ worker.user.username }} - {{ worker.title }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                            <button type="submit" class="btn btn-assign">Assign</button>
-                        </form>
-                    {% elif complaint.status != "Resolved" and complaint.assigned_worker %}
-                        <a href="{% url 'mark_resolved' complaint.id %}" class="btn btn-edit">Mark Resolved</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">No complaints found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
-    <!-- Workers Table -->
+<h2>Complaints Table</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Submitted By</th>
+            <th>Status</th>
+            <th>Assigned Worker</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for complaint in complaints %}
+        <tr>
+            <td>{{ complaint.id }}</td>
+            <td>{{ complaint.title }}</td>
+            <td>{{ complaint.description }}</td>
+            <td>{{ complaint.category }}</td>
+            <td>{{ complaint.user.username }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>
+                {% if complaint.assigned_worker %}
+                    {{ complaint.assigned_worker.first_name }} {{ complaint.assigned_worker.last_name }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </td>
+            <td>
+                {% if complaint.status == "Pending" %}
+                    <form method="POST" action="{% url 'assign_worker' complaint.id %}">
+                        {% csrf_token %}
+                        <select name="worker_id" required style="
+                            padding: 6px 8px;
+                            border-radius: 6px;
+                            border: 1px solid #ccc;
+                            font-size: 14px;
+                            margin-right: 8px;">
+                            <option value="" disabled selected>-- Select Worker --</option>
+                            {% for worker in workers %}
+                                {% if worker.status == "Available" %}
+                                    <option value="{{ worker.id }}">
+                                        {{ worker.user.username }} ({{ worker.user.first_name }} {{ worker.user.last_name }})
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-assign" style="padding: 6px 8px;">Assign</button>
+                    </form>
+                {% elif complaint.status != "Resolved" and complaint.assigned_worker %}
+                    <a href="{% url 'mark_resolved' complaint.id %}" class="btn btn-edit">Mark Resolved</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">No complaints found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+     <!-- Workers Table -->
     <h2>Worker Details</h2>
     <div class="top-buttons">
         <a href="{% url 'add_worker' %}" class="btn btn-add">Add Worker</a>
@@ -358,8 +163,10 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Full Name</th>
                 <th>Username</th>
-                <th>Title</th>
+                <th>Email</th>
+                <th>Phone Number</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -368,8 +175,10 @@
             {% for worker in workers %}
             <tr>
                 <td>{{ worker.user.id }}</td>
-                <td>{{ worker.user.username }}</td>
-                <td>{{ worker.title }}</td>
+                <td>{{ worker.user.first_name }} {{ worker.user.last_name }}</td>
+                <td>{{ worker.username }}</td>
+                <td>{{ worker.user.email }}</td>
+                <td>{{ worker.phone_number }}</td> <!-- phone number stored in title -->
                 <td>{{ worker.status }}</td>
                 <td>
                     <a href="{% url 'update_worker' worker.user.id %}" class="btn btn-edit">Edit</a>
@@ -378,7 +187,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5">No workers found.</td>
+                <td colspan="7">No workers found.</td>
             </tr>
             {% endfor %}
         </tbody>

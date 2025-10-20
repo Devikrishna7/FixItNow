@@ -1,4 +1,4 @@
-
+{% comment %} 
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -119,4 +119,384 @@
   </div>
 </body>
 </html>
+ {% endcomment %}
 
+{% comment %}  
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #e0f7ef;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .dashboard {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        max-width: 1000px;
+        width: 100%;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+        position: relative;
+        z-index: 1;
+    }
+
+    h1, h2 {
+        color: green;
+        margin-bottom: 15px;
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        background: green;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        margin-right: 10px;
+        transition: background 0.3s;
+    }
+    .btn:hover { background: #006400; }
+    .btn-logout { background: red; }
+    .btn-logout:hover { background: darkred; }
+
+    /* Search bar */
+    .search-bar {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 10px;
+    }
+    .search-bar input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+    .search-bar button {
+        padding: 10px 15px;
+        background: green;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .search-bar button:hover {
+        background: #006400;
+    }
+
+    /* Table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    th, td {
+        border: 1px solid #333;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background: green;
+        color: white;
+    }
+    tr:nth-child(even) { background: #f9f9f9; }
+
+    /* Status badges */
+    .status-badge {
+        padding: 6px 10px;
+        border-radius: 6px;
+        color: white;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .status-Pending { background: #f1c40f; }   /* Yellow */
+    .status-Assigned { background: #3498db; }  /* Blue */
+    .status-Resolved { background: #2ecc71; }  /* Green */
+
+    img.complaint-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    p {
+        font-size: 1rem;
+        color: black;
+        margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Student Dashboard</h1>
+
+    <a href="{% url 'submit_complaint' %}" class="btn">Submit New Complaint</a>
+    <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+
+    <h2>Your Complaints</h2>
+
+    <!-- 🔍 Search Bar -->
+    <form method="GET" action="" class="search-bar">
+        <input type="text" name="q" placeholder="Search by title, category, or status..." value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if complaints %}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Assigned Worker</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr>
+            <td>{{ complaint.title }}</td>
+            <td>{{ complaint.category }}</td>
+            <td>{{ complaint.description }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>
+              
+        {% if complaint.image %}
+          <img src="{{ complaint.image.url }}" alt="Complaint Image" style="max-width:120px; border-radius:8px;">
+        {% else %}
+          No image
+        {% endif %}
+      </td>
+      <td>{{ complaint.created_at|date:"d M Y H:i" }}</td>
+    
+      {% endfor %}
+            <td>
+              {% if complaint.assigned_worker %}
+                {{ complaint.assigned_worker.username }}
+              {% else %}
+                <em>Not Assigned</em>
+              {% endif %}
+            </td>
+            <td>
+              <span class="status-badge status-{{ complaint.status }}">
+                {{ complaint.status }}
+              </span>
+            </td>
+            <td>
+              {% if complaint.image %}
+                <img src="{{ complaint.image.url }}" class="complaint-img" alt="Complaint Image">
+              {% else %}
+                <em>No image</em>
+              {% endif %}
+            </td>
+            <td>{{ complaint.created_at|date:"d M Y, H:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>You have not submitted any complaints yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html> {% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #e0f7ef;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .dashboard {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        max-width: 1000px;
+        width: 100%;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+        position: relative;
+        z-index: 1;
+    }
+
+    h1, h2 {
+        color: green;
+        margin-bottom: 15px;
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        background: green;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        margin-right: 10px;
+        transition: background 0.3s;
+    }
+    .btn:hover { background: #006400; }
+    .btn-logout { background: red; }
+    .btn-logout:hover { background: darkred; }
+
+    /* Search bar */
+    .search-bar {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 10px;
+    }
+    .search-bar input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+    .search-bar button {
+        padding: 10px 15px;
+        background: green;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .search-bar button:hover {
+        background: #006400;
+    }
+
+    /* Table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    th, td {
+        border: 1px solid #333;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background: green;
+        color: white;
+    }
+    tr:nth-child(even) { background: #f9f9f9; }
+
+    /* Status badges */
+    .status-badge {
+        padding: 6px 10px;
+        border-radius: 6px;
+        color: white;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .status-Pending { background: #f1c40f; }   /* Yellow */
+    .status-Assigned { background: #3498db; }  /* Blue */
+    .status-Resolved { background: #2ecc71; }  /* Green */
+
+    img.complaint-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    p {
+        font-size: 1rem;
+        color: black;
+        margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Student Dashboard</h1>
+
+    <a href="{% url 'submit_complaint' %}" class="btn">Submit New Complaint</a>
+    <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+
+    <h2>Your Complaints</h2>
+
+    <!-- 🔍 Search Bar -->
+    <form method="GET" action="" class="search-bar">
+        <input type="text" name="q" placeholder="Search by title, category, or status..." value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if complaints %}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Assigned Worker</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr>
+            <td>{{ complaint.title }}</td>
+            <td>{{ complaint.category }}</td>
+            <td>{{ complaint.description }}</td>
+            <td>
+              {% if complaint.assigned_worker %}
+                {{ complaint.assigned_worker.username }}
+              {% else %}
+                <em>Not Assigned</em>
+              {% endif %}
+            </td>
+            <td>
+              <span class="status-badge status-{{ complaint.status }}">
+                {{ complaint.status }}
+              </span>
+            </td>
+            <td>
+              {% if complaint.image %}
+                <img src="{{ complaint.image.url }}" class="complaint-img" alt="Complaint Image">
+              {% else %}
+                <em>No image</em>
+              {% endif %}
+            </td>
+            <td>{{ complaint.created_at|date:"d M Y, H:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>You have not submitted any complaints yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display:flex; justify-content: space-between; align-items:center;">
+    <h2>All Complaints</h2>
+    <a href="{% url 'logout' %}" style="padding:8px 15px; background:red; color:white; text-decoration:none; border-radius:5px;">Logout</a>
+</div>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>User</th>
+        <th>Status</th>
+        <th>Category</th>
+        <th>Assigned Worker</th>
+        <th>Created At</th>
+    </tr>
+    {% for complaint in complaints %}
+    <tr>
+        <td>{{ complaint.id }}</td>
+        <td>{{ complaint.title }}</td>
+        <td>{{ complaint.user.username }}</td>
+        <td>{{ complaint.status }}</td>
+        <td>{{ complaint.category }}</td>
+        <td>{{ complaint.assigned_worker.username if complaint.assigned_worker }}</td>
+        <td>{{ complaint.created_at }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

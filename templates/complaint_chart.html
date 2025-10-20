@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display:flex; justify-content: space-between; align-items:center;">
+    <h2>Complaints Chart</h2>
+    <a href="{% url 'logout' %}" style="padding:8px 15px; background:red; color:white; text-decoration:none; border-radius:5px;">Logout</a>
+</div>
+
+<canvas id="complaintChart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('complaintChart').getContext('2d');
+const complaintChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ labels|safe }},
+        datasets: [{
+            label: 'Number of Complaints',
+            data: {{ counts|safe }},
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% load static %}
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,7 +154,15 @@
             <div class="complaint {% if complaint.status == 'Resolved' %}resolved{% endif %}">
                 <h4>{{ complaint.title }}</h4>
                 <p>{{ complaint.description }}</p>
+                <p><strong>Category:</strong> {{ complaint.category }}</p>
                 <p>Status: {% if complaint.status == 'Resolved' %}Resolved ✅{% else %}Pending ⏳{% endif %}</p>
+
+                {% if complaint.image %}
+                    <a href="{{ complaint.image.url }}" target="_blank">
+                        <img src="{{ complaint.image.url }}" alt="Complaint Image">
+                    </a>
+                {% endif %}
+
                 {% if complaint.status != 'Resolved' %}
                     <a href="{% url 'mark_resolved' complaint.id %}">Mark as Resolved</a>
                 {% endif %}
@@ -162,6 +170,175 @@
         {% empty %}
             <p>No complaints assigned.</p>
         {% endfor %}
+        {% comment %} <h2>Assigned Complaints</h2>
+        {% for complaint in complaints %}
+            <div class="complaint {% if complaint.status == 'Resolved' %}resolved{% endif %}">
+                <h4>{{ complaint.title }}</h4>
+                <p>{{ complaint.description }}</p>
+                <p>Status: {% if complaint.status == 'Resolved' %}Resolved ✅{% else %}Pending ⏳{% endif %}</p>
+                {% if complaint.status != 'Resolved' %}
+                    <a href="{% url 'mark_resolved' complaint.id %}">Mark as Resolved</a>
+                {% endif %} {% endcomment %}
+            {% comment %} </div>
+        {% empty %}
+            <p>No complaints assigned.</p>
+        {% endfor %}
+    </div>
+</body>
+</html> {% endcomment %} 
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worker Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e0f7ef;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+        }
+
+        h1, h2, h3 {
+            color: green;
+        }
+
+        h1 { text-align: center; margin-bottom: 25px; }
+
+        .top-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .btn-logout {
+            padding: 8px 12px;
+            background: red;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover { background: darkred; }
+
+        form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        select, button {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            font-size: 14px;
+        }
+
+        button {
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover { background: #006400; }
+
+        .complaint {
+            border: 1px solid #333;
+            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .resolved {
+            background: #d4fcd4;
+            border-left: 6px solid #2ecc71;
+        }
+
+        .complaint h4 {
+            margin: 0 0 10px;
+        }
+
+        .complaint p {
+            margin: 5px 0;
+        }
+
+        .complaint a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: green;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        .complaint a:hover { background: #006400; }
+
+        img {
+            max-width: 150px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Worker Dashboard</h1>
+
+        <div class="top-buttons">
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+
+        <h3>Status: {{ profile.status }}</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <select name="status">
+                <option value="Available" {% if profile.status == 'Available' %}selected{% endif %}>Available</option>
+                <option value="Busy" {% if profile.status == 'Busy' %}selected{% endif %}>Busy</option>
+                <option value="Offline" {% if profile.status == 'Offline' %}selected{% endif %}>Offline</option>
+            </select>
+            <button type="submit">Update Status</button>
+        </form>
+
+        <h2>Assigned Complaints</h2>
+
+        {% if complaints %}
+            {% for complaint in complaints %}
+                <div class="complaint {% if complaint.status == 'Resolved' %}resolved{% endif %}">
+                    <h4>{{ complaint.title }}</h4>
+                    <p>{{ complaint.description }}</p>
+                    <p><strong>Category:</strong> {{ complaint.category }}</p>
+                    <p>Status: {{ complaint.status }}</p>
+
+                    {% if complaint.image %}
+                        <a href="{{ complaint.image.url }}" target="_blank">
+                            <img src="{{ complaint.image.url }}" alt="Complaint Image">
+                        </a>
+                    {% endif %}
+
+                    {% if complaint.status != 'Resolved' %}
+                        <a href="{% url 'mark_resolved' complaint.id %}">Mark as Resolved</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No complaints assigned.</p>
+        {% endif %}
     </div>
 </body>
 </html>

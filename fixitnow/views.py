@@ -664,6 +664,38 @@ def add_student(request):
         return redirect("admin_dashboard")
 
     return render(request, "add_student.html")
+# -----------------------------
+# edit student
+# -----------------------------
+@login_required(login_url="login")
+def edit_student(request, student_id):
+    # Fetch the student user using CustomUser
+    student_user = get_object_or_404(CustomUser, id=student_id, role='student')
+    student_profile = getattr(student_user, 'studentprofile', None)
+
+    if request.method == "POST":
+        # Update User fields
+        student_user.first_name = request.POST.get("first_name")
+        student_user.last_name = request.POST.get("last_name")
+        student_user.username = request.POST.get("username")
+        student_user.email = request.POST.get("email")
+        student_user.save()
+
+        # Update StudentProfile fields
+        if student_profile:
+            student_profile.phone_number = request.POST.get("phone_number")
+            student_profile.department = request.POST.get("department")
+            student_profile.admission_number = request.POST.get("admission_number")
+            student_profile.year_of_admission = request.POST.get("year_of_admission")
+            student_profile.save()
+
+        messages.success(request, f"Student '{student_user.username}' updated successfully!")
+        return redirect("admin_dashboard")
+
+    return render(request, "edit_student.html", {
+        "student_user": student_user,
+        "student_profile": student_profile
+    })
 
 
 # -----------------------------

@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Student</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #e0f7ef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: green;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+            color: black;
+        }
+
+        input[type="text"], 
+        input[type="email"], 
+        input[type="number"], 
+        input[type="password"], 
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: green;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #006400;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: green;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Student</h1>
+        
+<form method="POST">
+    {% csrf_token %}
+    <label>First Name:</label>
+    <input type="text" name="first_name" value="{{ student_user.first_name }}" required>
+
+    <label>Last Name:</label>
+    <input type="text" name="last_name" value="{{ student_user.last_name }}" required>
+
+    <label>Username:</label>
+    <input type="text" name="username" value="{{ student_user.username }}" required>
+
+    <label>Email:</label>
+    <input type="email" name="email" value="{{ student_user.email }}" required>
+
+    <label>Phone Number:</label>
+    <input type="text" name="phone_number" value="{{ student_profile.phone_number }}" required>
+
+    <label>Department:</label>
+    <select name="department" required>
+        <option value="BTech" {% if student_profile.department == 'BTech' %}selected{% endif %}>B.Tech</option>
+        <option value="MTech" {% if student_profile.department == 'MTech' %}selected{% endif %}>M.Tech</option>
+        <option value="MBA" {% if student_profile.department == 'MBA' %}selected{% endif %}>MBA</option>
+        <option value="MCA" {% if student_profile.department == 'MCA' %}selected{% endif %}>MCA</option>
+        <option value="PhD" {% if student_profile.department == 'PhD' %}selected{% endif %}>PhD</option>
+    </select>
+
+    <label>Admission Number:</label>
+    <input type="text" name="admission_number" value="{{ student_profile.admission_number }}" required>
+
+    <label>Year of Admission:</label>
+    <input type="number" name="year_of_admission" value="{{ student_profile.year_of_admission }}" required>
+
+    <button type="submit">Update Student</button>
+</form>
+<a href="{% url 'admin_dashboard' %}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

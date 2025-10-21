@@ -311,6 +311,9 @@
                         <td>{{ student.department }}</td>
                         <td>{{ student.admission_number }}</td>
                         <td>{{ student.year_of_admission }}</td>
+                        <td>
+                            <a href="{% url 'edit_student' student.user.id %}" class="btn" style="background:orange;">Edit</a>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr><td colspan="8">No students found.</td></tr>
